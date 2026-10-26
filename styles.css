@@ -84,10 +84,45 @@ body {
 }
 
 .score,
-.timer {
+.timer,
+.lives {
     font-size: clamp(1.2rem, 2vw, 1.8rem);
     font-weight: 700;
     color: var(--brand-navy);
+}
+
+.lives {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+#hearts {
+    display: inline-flex;
+    gap: 2px;
+    color: var(--brand-red);
+}
+
+.heart {
+    transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.heart.is-lost {
+    opacity: 0.2;
+    transform: scale(0.85);
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
 }
 
 #game-container {
@@ -99,6 +134,34 @@ body {
     position: relative;
     overflow: hidden;
     box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.4);
+}
+
+.bucket {
+    position: absolute;
+    z-index: 3;
+    bottom: 12px;
+    left: calc(50% - 44px);
+    width: 88px;
+    height: 58px;
+    border: 3px solid #197fc1;
+    border-top: 0;
+    border-radius: 0 0 18px 18px;
+    background: linear-gradient(135deg, #8bd1cb 0%, #2e9df7 75%);
+    clip-path: polygon(0 0, 100% 0, 84% 100%, 16% 100%);
+    pointer-events: none;
+    filter: drop-shadow(0 4px 3px rgba(18, 43, 60, 0.2));
+}
+
+.bucket::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -3px;
+    width: calc(100% + 6px);
+    height: 10px;
+    border-radius: 6px;
+    background: var(--brand-yellow);
+    border: 2px solid #e4b600;
 }
 
 #start-btn {
@@ -127,20 +190,17 @@ body {
 
 .water-drop {
     position: absolute;
+    z-index: 2;
     width: 60px;
     height: 60px;
     background: radial-gradient(circle at 30% 30%, #d9f5ff 0%, var(--brand-blue) 35%, #1a7fd9 100%);
     border-radius: 50%;
     animation: dropFall linear forwards;
     transform-origin: center;
-    cursor: pointer;
+    cursor: default;
     box-shadow: inset -8px -8px 16px rgba(0, 0, 0, 0.12);
     border: 2px solid rgba(255, 255, 255, 0.5);
     transition: transform 0.12s ease;
-}
-
-.water-drop:hover {
-    transform: scale(1.08);
 }
 
 .water-drop::after {
@@ -205,7 +265,7 @@ body {
         transform: translateY(-20px);
     }
     to {
-        transform: translateY(600px);
+        transform: translateY(var(--fall-distance, 600px));
     }
 }
 
@@ -229,8 +289,10 @@ body {
     }
 
     .score,
-    .timer {
+    .timer,
+    .lives {
         width: 100%;
         text-align: center;
+        justify-content: center;
     }
 }

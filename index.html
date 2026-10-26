@@ -18,12 +18,23 @@
         <div class="score-panel">
             <div class="score">Score: <span id="score">0</span></div>
             <div class="timer">Time: <span id="time">30</span>s</div>
+            <div class="lives">
+                <span class="lives-label">Lives:</span>
+                <span id="hearts" aria-hidden="true">
+                    <span class="heart">♥</span>
+                    <span class="heart">♥</span>
+                    <span class="heart">♥</span>
+                </span>
+                <span id="lives-text" class="visually-hidden" aria-live="polite">3 of 3 lives remaining</span>
+            </div>
             <button id="start-btn" type="button">Start Game</button>
         </div>
 
         <div id="game-message" class="game-message hidden" aria-live="polite"></div>
 
-        <div id="game-container" aria-label="Water drop game area"></div>
+        <div id="game-container" aria-label="Water drop game area">
+            <div id="bucket" class="bucket" aria-hidden="true"></div>
+        </div>
     </div>
 
     <script src="script.js"></script>
