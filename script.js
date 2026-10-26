@@ -6,6 +6,7 @@ const messageElement = document.getElementById("game-message");
 const bucket = document.getElementById("bucket");
 const hearts = Array.from(document.querySelectorAll(".heart"));
 const livesText = document.getElementById("lives-text");
+const confettiContainer = document.getElementById("confetti-container");
 
 let gameRunning = false;
 let score = 0;
@@ -44,8 +45,42 @@ function updateLives() {
   livesText.textContent = `${lives} of 3 lives remaining`;
 }
 
+function loseLife() {
+  if (!gameRunning) {
+    return;
+  }
+
+  lives -= 1;
+  updateLives();
+
+  if (lives === 0) {
+    endGame(true);
+  }
+}
+
 function clearDrops() {
   gameContainer.querySelectorAll(".water-drop").forEach((drop) => drop.remove());
+}
+
+function launchConfetti() {
+  const colors = ["#ffc907", "#2e9df7", "#8bd1cb", "#4fcb53", "#ff902a", "#f16061"];
+  const fragment = document.createDocumentFragment();
+
+  for (let index = 0; index < 90; index += 1) {
+    const piece = document.createElement("span");
+    piece.className = "confetti-piece";
+    piece.style.setProperty("--confetti-left", `${Math.random() * 100}vw`);
+    piece.style.setProperty("--confetti-size", `${6 + Math.random() * 8}px`);
+    piece.style.setProperty("--confetti-color", colors[index % colors.length]);
+    piece.style.setProperty("--confetti-duration", `${2.5 + Math.random() * 2}s`);
+    piece.style.setProperty("--confetti-delay", `${Math.random() * 0.6}s`);
+    piece.style.setProperty("--confetti-drift", `${Math.random() * 300 - 150}px`);
+    piece.style.setProperty("--confetti-rotation", `${360 + Math.random() * 720}deg`);
+    piece.addEventListener("animationend", () => piece.remove(), { once: true });
+    fragment.appendChild(piece);
+  }
+
+  confettiContainer.replaceChildren(fragment);
 }
 
 function hideMessage() {
@@ -81,6 +116,7 @@ function startGame() {
   updateTimer();
   updateLives();
   hideMessage();
+  confettiContainer.replaceChildren();
   startButton.textContent = "Game Running";
   clearDrops();
   bucket.style.left = `calc(50% - ${bucket.offsetWidth / 2}px)`;
@@ -117,6 +153,10 @@ function endGame(forcedLoss = false) {
   const randomMessage = messages[Math.floor(Math.random() * messages.length)];
 
   showMessage(forcedLoss ? `Game over! ${randomMessage}` : randomMessage, isWinning);
+
+  if (!forcedLoss && lives >= 1) {
+    launchConfetti();
+  }
 }
 
 function moveBucket(event) {
@@ -162,12 +202,7 @@ function checkCollisions() {
     drop.remove();
 
     if (isBadDrop) {
-      lives -= 1;
-      updateLives();
-
-      if (lives === 0) {
-        endGame(true);
-      }
+      loseLife();
     }
   });
 
@@ -200,7 +235,12 @@ function createDrop() {
 
   drop.addEventListener("animationend", () => {
     if (drop.isConnected) {
+      const isBadDrop = drop.classList.contains("bad-drop");
       drop.remove();
+
+      if (!isBadDrop) {
+        loseLife();
+      }
     }
   });
 
