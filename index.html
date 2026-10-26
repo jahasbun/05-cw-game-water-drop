@@ -8,18 +8,24 @@
 </head>
 <body>
     <div class="game-wrapper">
+        <header class="game-header">
+            <img class="brand-logo" src="img/cw_logo-horizontal.png" alt="charity: water logo" />
+        </header>
+
         <h1 class="game-title">Water Drop</h1>
         <p class="game-tagline">Catch the good drops, avoid the bad ones!</p>
+
         <div class="score-panel">
             <div class="score">Score: <span id="score">0</span></div>
             <div class="timer">Time: <span id="time">30</span>s</div>
-            <button id="start-btn">Start Game</button>
+            <button id="start-btn" type="button">Start Game</button>
         </div>
-        
-        <div id="game-container">
-        </div>
+
+        <div id="game-message" class="game-message hidden" aria-live="polite"></div>
+
+        <div id="game-container" aria-label="Water drop game area"></div>
     </div>
-    
+
     <script src="script.js"></script>
 </body>
 </html>
